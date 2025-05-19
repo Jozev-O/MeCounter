@@ -1,9 +1,27 @@
-# Пример конфигурации (SemVer + GitFlow)
-mode: Mainline # или ContinuousDeployment
+mode: Mainline
+assembly-versioning-scheme: MajorMinorPatchTag
+assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-informational-format: '{Major}.{Minor}.{Patch}-{BranchName}+{Sha}'
+commit-message-incrementing: Enabled
 branches:
   main:
-    tag: '' # версия генерируется из тегов (например, v1.0.0)
-  feature:
-    increment: Minor
-  hotfix:
+    regex: ^main$
+    mode: ContinuousDelivery
+    tag: ''
     increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  feature:
+    regex: ^features?[/-]
+    mode: ContinuousDelivery
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+ignore:
+  sha: []
+  commit-message: []
