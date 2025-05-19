@@ -1,0 +1,9 @@
+# Пример конфигурации (SemVer + GitFlow)
+mode: Mainline # или ContinuousDeployment
+branches:
+  main:
+    tag: '' # версия генерируется из тегов (например, v1.0.0)
+  feature:
+    increment: Minor
+  hotfix:
+    increment: Patch

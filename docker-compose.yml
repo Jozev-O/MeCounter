@@ -1,0 +1,48 @@
+﻿services:
+  mecounter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
+      - ConnectionStrings__DefaultConnection=${POSTGRES_CONNECTION}
+    depends_on:
+      telegrambot_db:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    networks:
+      - bot-network
+
+  telegrambot_db:
+    image: postgres:latest
+    container_name: my_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bot-network
+    ports:  # Удалить при не надобности соединения к бд извне
+      - "5432:5432"
+
+volumes:
+  pgdata:
+
+networks:
+  bot-network:
+    driver: bridge

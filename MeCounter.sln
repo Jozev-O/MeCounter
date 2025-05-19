@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeCounter", "MeCounter\MeCounter.csproj", "{3DBCA60C-668A-40B7-8D15-C955E9C5CE29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeCounter.DataAccess.Postgres", "MeCounter.DataAccess.Postgres\MeCounter.DataAccess.Postgres.csproj", "{4DD54FBC-C1BD-9A90-0D35-2B7B41F5A5EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DBCA60C-668A-40B7-8D15-C955E9C5CE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DBCA60C-668A-40B7-8D15-C955E9C5CE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DBCA60C-668A-40B7-8D15-C955E9C5CE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DBCA60C-668A-40B7-8D15-C955E9C5CE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD54FBC-C1BD-9A90-0D35-2B7B41F5A5EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD54FBC-C1BD-9A90-0D35-2B7B41F5A5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD54FBC-C1BD-9A90-0D35-2B7B41F5A5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD54FBC-C1BD-9A90-0D35-2B7B41F5A5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C71D921-CD3C-4016-8D83-90F518EE6A4C}
+	EndGlobalSection
+EndGlobal
