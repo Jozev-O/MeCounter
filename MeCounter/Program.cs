@@ -34,7 +34,7 @@ namespace MeCounter
             var version = Assembly.GetEntryAssembly().GetName().Version;
             try
             {
-                Log.Information("Начало работы...");
+                Log.Information("Начало работы... (Версия: {version})", version);
 
                 // Настройка конфигурации
                 var configuration = new ConfigurationBuilder()
