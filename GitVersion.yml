@@ -1,53 +1,26 @@
-#mode: Mainline
-#assembly-versioning-scheme: MajorMinorPatchTag
-#assembly-file-versioning-scheme: MajorMinorPatchTag
-#assembly-informational-format: '{Major}.{Minor}.{Patch}-{BranchName}+{Sha}'
-#commit-message-incrementing: Enabled
-#branches:
-#  main:
-#    regex: ^main$
-#    mode: ContinuousDelivery
-#    tag: ''
-#    increment: Patch
-#    prevent-increment-of-merged-branch-version: true
-#    track-merge-target: false
-#    tracks-release-branches: false
-#    is-release-branch: false
-#  feature:
-#    regex: ^features?[/-]
-#    mode: ContinuousDelivery
-#    tag: useBranchName
-#    increment: Inherit
-#    prevent-increment-of-merged-branch-version: false
-#    track-merge-target: false
-#    tracks-release-branches: false
-#    is-release-branch: false
-#ignore:
-#  sha: []
-#  commit-message: []
-mode: Mainline
+mode: ContinuousDelivery
 next-version: 1.0.0
 assembly-informational-format: '{Major}.{Minor}.{Patch}+{BranchName}.{ShortSha}.{Sha}'
 branches:
   main:
     regex: ^main$
     increment: Patch
-    tag: ''
+    label: ''
     source-branches: ['feature', 'release', 'hotfix']
   feature:
     regex: ^feature(s)?[/-]
     increment: Minor
-    tag: 'alpha'
+    label: 'alpha'
     source-branches: []
   release:
     regex: ^release(s)?[/-]
     increment: Patch
-    tag: 'rc'
+    label: 'rc'
     source-branches: ['feature']
   hotfix:
     regex: ^hotfix(es)?[/-]
     increment: Patch
-    tag: 'hotfix'
+    label: 'hotfix'
     source-branches: ['main']
 ignore:
   sha: []
