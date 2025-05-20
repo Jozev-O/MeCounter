@@ -1,5 +1,7 @@
 ﻿using MeCounter.DataAccess.Postgres.Repositories;
 using MeCounter.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class SetCountedCommandHandler(UsersRepository usersRepository) : IAdminCommandHandler
 {

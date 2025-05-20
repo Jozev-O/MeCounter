@@ -5,25 +5,19 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<!-- Эти свойства будут перезаписаны GitVersion -->
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<!-- Настройки версии для GitVersion -->
 		<VersionPrefix>1.0.0</VersionPrefix>
-		<VersionSuffix></VersionSuffix>
 		<GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
 	</PropertyGroup>
 
-	<Target Name="SetGitVersion" BeforeTargets="Build">
-		<Exec Command="dotnet-gitversion /output json /showvariable InformationalVersion"
-			  ConsoleToMSBuild="true"
-			  IgnoreExitCode="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="InformationalVersion" />
-		</Exec>
-		<PropertyGroup>
-			<InformationalVersion Condition="'$(InformationalVersion)' == ''">1.0.0+unknown</InformationalVersion>
-		</PropertyGroup>
-		<Message Importance="high" Text="Generated version: $(InformationalVersion)" />
-	</Target>
-
 	<ItemGroup>
+		<PackageReference Include="GitVersionTask" Version="5.5.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
@@ -49,6 +43,3 @@
 	</ItemGroup>
 
 </Project>
-
-
-

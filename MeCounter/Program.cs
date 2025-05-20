@@ -31,7 +31,7 @@ namespace MeCounter
                        theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
                    .WriteTo.File("logs/meCounter.log", rollingInterval: RollingInterval.Day)
                    .CreateLogger();
-            var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             try
             {
                 Log.Information("Начало работы... (Версия: {version})", version);

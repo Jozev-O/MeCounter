@@ -2,7 +2,12 @@
 using MeCounter.DataAccess.Postgres.Repositories;
 using MeCounter.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -15,7 +20,7 @@ namespace MeCounter.Services
         private readonly UsersRepository _usersRepository = usersRepository;
         private readonly PornRepository _pornRepository = pornRepository;
         private readonly AppDbContext _appDbContext = appDbContext;
-        
+
         public async Task<string?> ProcessTextAsync(Message message, CancellationToken cancellationToken, ITelegramBotClient botClient)
         {
             var text = message.Text?.Trim().ToLower();
