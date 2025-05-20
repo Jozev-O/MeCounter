@@ -25,9 +25,9 @@
 #ignore:
 #  sha: []
 #  commit-message: []
-
 next-version: 1.0.0
 mode: Mainline
+assembly-informational-format: '{Major}.{Minor}.{Patch}'
 branches:
   main:
     increment: Patch
