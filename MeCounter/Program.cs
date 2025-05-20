@@ -36,24 +36,6 @@ namespace MeCounter
             {
                 Log.Information("Начало работы... (Версия: {version})", version);
                 var intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
-                intw = 12;
 
                 // Настройка конфигурации
                 var configuration = new ConfigurationBuilder()

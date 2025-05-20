@@ -1,27 +1,27 @@
-mode: ContinuousDelivery
-next-version: 1.0.0
-assembly-informational-format: '{Major}.{Minor}.{Patch}+{BranchName}.{ShortSha}.{Sha}'
-branches:
-  main:
-    regex: ^main$
-    increment: Patch
-    label: ''
-    source-branches: ['feature', 'release', 'hotfix']
-  feature:
-    regex: ^feature(s)?[/-]
-    increment: Minor
-    label: 'alpha'
-    source-branches: []
-  release:
-    regex: ^release(s)?[/-]
-    increment: Patch
-    label: 'rc'
-    source-branches: ['feature']
-  hotfix:
-    regex: ^hotfix(es)?[/-]
-    increment: Patch
-    label: 'hotfix'
-    source-branches: ['main']
-ignore:
-  sha: []
-commit-message-incrementing: Enabled
+#mode: ContinuousDelivery
+#next-version: 1.0.0
+#assembly-informational-format: '{Major}.{Minor}.{Patch}+{BranchName}.{ShortSha}.{Sha}'
+#branches:
+#  main:
+#    regex: ^main$
+#    increment: Patch
+#    label: ''
+#    source-branches: ['feature', 'release', 'hotfix']
+#  feature:
+#    regex: ^feature(s)?[/-]
+#    increment: Minor
+#    label: 'alpha'
+#    source-branches: []
+#  release:
+#    regex: ^release(s)?[/-]
+#    increment: Patch
+#    label: 'rc'
+#    source-branches: ['feature']
+#  hotfix:
+#    regex: ^hotfix(es)?[/-]
+#    increment: Patch
+#    label: 'hotfix'
+#    source-branches: ['main']
+#ignore:
+#  sha: []
+#commit-message-incrementing: Enabled
