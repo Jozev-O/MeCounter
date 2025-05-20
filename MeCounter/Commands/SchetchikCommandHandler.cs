@@ -10,11 +10,8 @@ namespace MeCounter.Commands
 {
     public class SchetchikCommandHandler(ChatsRepository chatsRepository, UsersRepository usersRepository) : ICommandHandler
     {
-        private readonly ChatsRepository _chatsRepository = chatsRepository
-            ?? throw new ArgumentNullException(nameof(chatsRepository));
-
-        private readonly UsersRepository _usersRepository = usersRepository
-            ?? throw new ArgumentNullException(nameof(usersRepository));
+        private readonly ChatsRepository _chatsRepository = chatsRepository;
+        private readonly UsersRepository _usersRepository = usersRepository;
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {
