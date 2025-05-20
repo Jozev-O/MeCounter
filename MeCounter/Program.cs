@@ -35,7 +35,7 @@ namespace MeCounter
             try
             {
                 Log.Information("Начало работы... (Версия: {version})", version);
-
+                var intw = 12;
                 // Настройка конфигурации
                 var configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())

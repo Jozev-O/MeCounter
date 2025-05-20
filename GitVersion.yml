@@ -27,7 +27,7 @@
 #  commit-message: []
 mode: Mainline
 next-version: 1.0.0
-assembly-informational-format: '{Major}.{Minor}.{Patch}+{BranchName}.{ShortSha}'
+assembly-informational-format: '{Major}.{Minor}.{Patch}+{BranchName}.{ShortSha}.{Sha}'
 branches:
   main:
     regex: ^main$
