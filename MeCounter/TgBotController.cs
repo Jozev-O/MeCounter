@@ -3,11 +3,6 @@ using MeCounter.DataAccess.Postgres.Repositories;
 using MeCounter.Interfaces;
 using MeCounter.Services;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -31,7 +26,10 @@ namespace MeCounter
             SchetchikCommandHandler schetchikHandler,
             NoSchetchikCommandHandler noSchetchikHandler,
             PornCommandHandler pornHandler,
-            AdminCommandHandler adminHandler)
+            AdminCommandHandler adminHandler,
+            VersionCommandHandler vertionHandler,
+            VideoCommandHandler videoHandler
+            )
         {
             _logger = logger;
             _chatsRepository = chatsRepository;
@@ -42,12 +40,23 @@ namespace MeCounter
                 { "/admin", adminHandler },
                 { "/яйца", pornHandler },
                 { "/schetchik", schetchikHandler },
-                { "/no_schetchik", noSchetchikHandler }
+                { "/no_schetchik", noSchetchikHandler },
+                { "/version", vertionHandler },
+                { "/savevideo", videoHandler},
+                { "/sendvideo", videoHandler }
             };
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            // Проверяем, есть ли видео
+            if (update.Message?.Video != null)
+            {
+                _logger.LogInformation("Полученов видео от {ChatId}:", update.Message?.From?.Id);
+
+                await HandleVideoMessageAsync(botClient, update.Message, cancellationToken);
+                return;
+            }
             if (update.Message is not { Text: var textRaw and not null, From: var tgUser, Chat: var tgChat }) return;
 
             _logger.LogInformation("Сообщение от {UserName} (ID: {UserId}) в чате {ChatId}: {Message}",
@@ -60,7 +69,10 @@ namespace MeCounter
             var command = NormalizeCommand(textRaw.Split(' ')[0]);
             if (_commandHandlers.TryGetValue(command, out var handler))
             {
-                var response = await handler.HandleAsync(update.Message, cancellationToken);
+                var response = command == "/sendvideo"
+                    ? await ((VideoCommandHandler)handler).SendVideoAsync(update.Message, cancellationToken)
+                    : await handler.HandleAsync(update.Message, cancellationToken);             // Костыль. Потом исправить
+                //var response = await handler.HandleAsync(update.Message, cancellationToken);
                 await SendBotReplyAsync(botClient, tgChat.Id, update.Message.MessageId, response, cancellationToken);
                 _logger.LogInformation("Команда {Command} в чате {ChatId}: {Response}", command, tgChat.Id, response.Replace("\n", " "));
                 return;
@@ -71,6 +83,16 @@ namespace MeCounter
             {
                 await SendBotReplyAsync(botClient, tgChat.Id, update.Message.MessageId, textResponse, cancellationToken);
                 _logger.LogInformation("Текст в чате {ChatId}: {Response}", tgChat.Id, textResponse.Replace("\n", " "));
+            }
+        }
+
+        private async Task HandleVideoMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+        {
+            if (_commandHandlers.TryGetValue("/savevideo", out var handler))
+            {
+                var response = await ((VideoCommandHandler)handler).HandleAsync(message, cancellationToken);
+                await SendBotReplyAsync(botClient, message.Chat.Id, message.MessageId, response, cancellationToken);
+                _logger.LogInformation("Видео обработано в чате {ChatId}: {Response}", message.Chat.Id, response.Replace("\n", " "));
             }
         }
 
@@ -135,6 +157,7 @@ namespace MeCounter
             CancellationToken cancellationToken)
         {
             _logger.LogError(exception, "Ошибка обработки: {Source}", source);
+            _logger.LogError("exception: {exception}", exception.Message);
             return Task.CompletedTask;
         }
     }

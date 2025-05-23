@@ -9,7 +9,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        // 👉 ЗАМЕНИ СТРОКУ ПОДКЛЮЧЕНИЯ НА СВОЮ
+         //👉 ЗАМЕНИ СТРОКУ ПОДКЛЮЧЕНИЯ НА СВОЮ
         //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=passw0rd;Database=telegrambot_db");
 
         return new AppDbContext(optionsBuilder.Options);
