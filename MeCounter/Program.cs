@@ -36,6 +36,24 @@ namespace MeCounter
             {
                 Log.Information("Начало работы... (Версия: {version})", version);
                 var intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
+                intw = 12;
 
                 // Настройка конфигурации
                 var configuration = new ConfigurationBuilder()
@@ -52,8 +70,8 @@ namespace MeCounter
                 var serviceProvider = services.BuildServiceProvider();
 
                 // Получение строки подключения и токена
-                //string? botToken = configuration["Telegram:BotToken"]
-                //?? throw new InvalidOperationException("Не удалось найти токен Telegram в конфигурации.");
+                string? botToken = configuration["Telegram:BotToken"]
+                    ?? throw new InvalidOperationException("Не удалось найти токен Telegram в конфигурации.");
 
                 // Проверка подключения к БД
                 using var scope = serviceProvider.CreateScope();
@@ -67,13 +85,13 @@ namespace MeCounter
                 logger.LogInformation("Безмозглый Антон проснуля!");
 
                 // Инициализация Telegram бота
-                var bot = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+                var bot = new TelegramBotClient(botToken);
                 var tgController = scope.ServiceProvider.GetRequiredService<TgBotController>();
 
                 // Опции приёма обновлений
                 var receiverOptions = new ReceiverOptions
                 {
-                    AllowedUpdates = []
+                    AllowedUpdates = [UpdateType.Message]
                 };
 
                 // Запуск бота
@@ -109,11 +127,6 @@ namespace MeCounter
                 loggingBuilder.ClearProviders();
                 loggingBuilder.AddSerilog(dispose: true);
             });
-
-            services.AddSingleton(configuration);
-
-            services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(
-                configuration["Telegram:BotToken"] ?? throw new InvalidOperationException("Токен не найден")));
 
             // База данных
             services.AddDbContext<AppDbContext>(options =>
@@ -157,19 +170,11 @@ namespace MeCounter
                 new NoSchetchikCommandHandler(
                     sp.GetRequiredService<UsersRepository>()));
 
-            services.AddScoped<VersionCommandHandler>();
-
             services.AddScoped(sp =>
                 new PornCommandHandler(
                     sp.GetRequiredService<ILogger<PornCommandHandler>>(),
                     sp.GetRequiredService<PornRepository>(),
                     sp.GetRequiredService<UsersRepository>()));
-
-            services.AddScoped(sp =>
-                new VideoCommandHandler(
-                    sp.GetRequiredService<ILogger<VideoCommandHandler>>(),
-                    sp.GetRequiredService<VideoMetadataRepository>(),
-                    sp.GetRequiredService<ITelegramBotClient>()));
 
             // Админский обработчик с явными зависимостями
             services.AddScoped(sp => new AdminCommandHandler(
@@ -182,13 +187,10 @@ namespace MeCounter
             ));
 
             // Регистрация интерфейсов команд
-            services.AddScoped<ICommandHandler, VideoCommandHandler>();
-            services.AddScoped<ICommandHandler, VersionCommandHandler>();
             services.AddScoped<ICommandHandler, AdminCommandHandler>();
             services.AddScoped<ICommandHandler, SchetchikCommandHandler>();
             services.AddScoped<ICommandHandler, NoSchetchikCommandHandler>();
             services.AddScoped<ICommandHandler, PornCommandHandler>();
-
 
             // Основной контроллер бота
             services.AddScoped<TgBotController>();

@@ -9,7 +9,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
-        //Database.Migrate();
+        //Database.Migrate(); 
     }
     public DbSet<User> Users => Set<User>();
     public DbSet<Chat> Chats => Set<Chat>();
@@ -22,11 +22,4 @@ public class AppDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    if (!optionsBuilder.IsConfigured)
-    //    {
-    //        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=passw0rd;Database=telegrambot_db");
-    //    }
-    //}
 }
