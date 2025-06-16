@@ -13,7 +13,7 @@ namespace MeCounter.Commands
                 return Task.FromResult("Сообщение не распознано.");
             }
 
-            return Task.FromResult(
+            return Task.FromResult("Безмозглый Антон\nВерсия: " +
                 Assembly
                     .GetExecutingAssembly()
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?

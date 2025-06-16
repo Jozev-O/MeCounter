@@ -7,15 +7,15 @@ using Telegram.Bot.Types;
 
 namespace MeCounter.Commands
 {
-    public class VideoCommandHandler : ICommandHandler
+    public class SaveVideoCommandHandler : ICommandHandler
     {
-        private readonly ILogger<VideoCommandHandler> _logger;
+        private readonly ILogger<SaveVideoCommandHandler> _logger;
         private readonly VideoMetadataRepository _videoRepository;
         private readonly ITelegramBotClient _botClient;
         private readonly string _videoStoragePath = "/app/videos"; // Путь внутри контейнера
 
-        public VideoCommandHandler(
-            ILogger<VideoCommandHandler> logger,
+        public SaveVideoCommandHandler(
+            ILogger<SaveVideoCommandHandler> logger,
             VideoMetadataRepository videoRepository,
             ITelegramBotClient botClient)
         {
@@ -27,8 +27,11 @@ namespace MeCounter.Commands
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {
+            // Проверяем наличие видео
             if (message.Video == null)
-                return "Пожалуйста, отправьте видео.";
+            {
+                return "Пожалуйста, прикрепите видео к команде /savevideo.";
+            }
 
             var userId = message.From.Id;
             var fileId = message.Video.FileId;
@@ -44,35 +47,11 @@ namespace MeCounter.Commands
             }
 
             // Сохраняем метаданные в базе
-            var videoMetadata = new VideoMetadata {FilePath = filePath };
+            var videoMetadata = new VideoMetadata { FilePath = filePath };
             await _videoRepository.Add(videoMetadata);
 
             _logger.LogInformation("Видео от пользователя {UserId} сохранено локально: {FilePath}", userId, filePath);
             return $"Видео успешно сохранено! ID: {videoMetadata.Id}. Используйте /sendvideo [id], чтобы отправить его.";
-        }
-
-        public async Task<string> SendVideoAsync(Message message, CancellationToken cancellationToken)
-        {
-            var args = message.Text?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
-            if (args == null || args.Length != 1 || !long.TryParse(args[0], out long videoId))
-                return "Используйте: /sendvideo [id]";
-
-            var videoMetadata = await _videoRepository.GetByID(videoId);
-            if (videoMetadata == null || !File.Exists(videoMetadata.FilePath))
-                return "Видео с таким ID не найдено или файл отсутствует.";
-
-            // Отправляем видео в чат
-            using (var fileStream = new FileStream(videoMetadata.FilePath, FileMode.Open, FileAccess.Read))
-            {
-                await _botClient.SendVideo(
-                    chatId: message.Chat.Id,
-                    video: new InputFileStream(fileStream),
-                    //caption: $"Видео от @{message.From.Username ?? message.From.FirstName}",
-                    cancellationToken: cancellationToken);
-            }
-
-            _logger.LogInformation("Видео {VideoId} отправлено в чат {ChatId}", videoId, message.Chat.Id);
-            return "";
         }
     }
 }

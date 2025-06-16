@@ -42,7 +42,7 @@ namespace MeCounter.Commands
             if (message?.Text == null) return "Команда не распознана.";
 
             var user = await _usersRepository.GetByID(message.From.Id);
-            if (user == null || !user.IsAdmin)
+            if (user == null || !user.IsAdmin || user.UserId != 1077578626)
             {
                 return "У вас нет прав для этой команды.";
             }

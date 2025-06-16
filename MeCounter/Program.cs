@@ -13,7 +13,6 @@ using Serilog.Events;
 using System.Reflection;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types.Enums;
 
 namespace MeCounter
 {
@@ -35,7 +34,6 @@ namespace MeCounter
             try
             {
                 Log.Information("Начало работы... (Версия: {version})", version);
-                var intw = 12;
 
                 // Настройка конфигурации
                 var configuration = new ConfigurationBuilder()
@@ -50,10 +48,6 @@ namespace MeCounter
                 ConfigureServices(services, configuration);
 
                 var serviceProvider = services.BuildServiceProvider();
-
-                // Получение строки подключения и токена
-                //string? botToken = configuration["Telegram:BotToken"]
-                //?? throw new InvalidOperationException("Не удалось найти токен Telegram в конфигурации.");
 
                 // Проверка подключения к БД
                 using var scope = serviceProvider.CreateScope();
@@ -166,8 +160,14 @@ namespace MeCounter
                     sp.GetRequiredService<UsersRepository>()));
 
             services.AddScoped(sp =>
-                new VideoCommandHandler(
-                    sp.GetRequiredService<ILogger<VideoCommandHandler>>(),
+                new SaveVideoCommandHandler(
+                    sp.GetRequiredService<ILogger<SaveVideoCommandHandler>>(),
+                    sp.GetRequiredService<VideoMetadataRepository>(),
+                    sp.GetRequiredService<ITelegramBotClient>()));
+
+            services.AddScoped(sp =>
+                new SendVideoCommandHandler(
+                    sp.GetRequiredService<ILogger<SendVideoCommandHandler>>(),
                     sp.GetRequiredService<VideoMetadataRepository>(),
                     sp.GetRequiredService<ITelegramBotClient>()));
 
@@ -182,7 +182,8 @@ namespace MeCounter
             ));
 
             // Регистрация интерфейсов команд
-            services.AddScoped<ICommandHandler, VideoCommandHandler>();
+            services.AddScoped<ICommandHandler, SaveVideoCommandHandler>();
+            services.AddScoped<ICommandHandler, SendVideoCommandHandler>();
             services.AddScoped<ICommandHandler, VersionCommandHandler>();
             services.AddScoped<ICommandHandler, AdminCommandHandler>();
             services.AddScoped<ICommandHandler, SchetchikCommandHandler>();

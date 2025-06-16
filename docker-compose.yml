@@ -1,5 +1,6 @@
 ﻿services:
   mecounter:
+    image: jozev09/mecounter-mecounter:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,6 +9,8 @@
     environment:
       - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
       - ConnectionStrings__DefaultConnection=${POSTGRES_CONNECTION}
+    volumes:
+      - videodata:/app/videos
     depends_on:
       telegrambot_db:
         condition: service_healthy
@@ -42,6 +45,7 @@
 
 volumes:
   pgdata:
+  videodata:
 
 networks:
   bot-network:

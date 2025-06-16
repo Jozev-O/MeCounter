@@ -24,4 +24,4 @@
 #    is-release-branch: false
 #ignore:
 #  sha: []
-#  commit-message: []
+#  commits-before: []

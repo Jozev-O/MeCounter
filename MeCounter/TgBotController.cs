@@ -28,7 +28,8 @@ namespace MeCounter
             PornCommandHandler pornHandler,
             AdminCommandHandler adminHandler,
             VersionCommandHandler vertionHandler,
-            VideoCommandHandler videoHandler
+            SaveVideoCommandHandler saveVideoHandler,
+            SendVideoCommandHandler sendVideoHandler
             )
         {
             _logger = logger;
@@ -42,8 +43,8 @@ namespace MeCounter
                 { "/schetchik", schetchikHandler },
                 { "/no_schetchik", noSchetchikHandler },
                 { "/version", vertionHandler },
-                { "/savevideo", videoHandler},
-                { "/sendvideo", videoHandler }
+                { "/savevideo", saveVideoHandler},
+                { "/sendvideo", sendVideoHandler }
             };
         }
 
@@ -53,10 +54,10 @@ namespace MeCounter
             if (update.Message?.Video != null)
             {
                 _logger.LogInformation("Полученов видео от {ChatId}:", update.Message?.From?.Id);
-
                 await HandleVideoMessageAsync(botClient, update.Message, cancellationToken);
                 return;
             }
+
             if (update.Message is not { Text: var textRaw and not null, From: var tgUser, Chat: var tgChat }) return;
 
             _logger.LogInformation("Сообщение от {UserName} (ID: {UserId}) в чате {ChatId}: {Message}",
@@ -69,10 +70,7 @@ namespace MeCounter
             var command = NormalizeCommand(textRaw.Split(' ')[0]);
             if (_commandHandlers.TryGetValue(command, out var handler))
             {
-                var response = command == "/sendvideo"
-                    ? await ((VideoCommandHandler)handler).SendVideoAsync(update.Message, cancellationToken)
-                    : await handler.HandleAsync(update.Message, cancellationToken);             // Костыль. Потом исправить
-                //var response = await handler.HandleAsync(update.Message, cancellationToken);
+                var response = await handler.HandleAsync(update.Message, cancellationToken);
                 await SendBotReplyAsync(botClient, tgChat.Id, update.Message.MessageId, response, cancellationToken);
                 _logger.LogInformation("Команда {Command} в чате {ChatId}: {Response}", command, tgChat.Id, response.Replace("\n", " "));
                 return;
@@ -86,13 +84,15 @@ namespace MeCounter
             }
         }
 
-        private async Task HandleVideoMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+        private async Task HandleVideoMessageAsync(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
         {
-            if (_commandHandlers.TryGetValue("/savevideo", out var handler))
+            var command = NormalizeCommand(message.Caption.Split(' ')[0]);
+            if (_commandHandlers.TryGetValue(command, out var handler))
             {
-                var response = await ((VideoCommandHandler)handler).HandleAsync(message, cancellationToken);
+                var response = await handler.HandleAsync(message, cancellationToken);
                 await SendBotReplyAsync(botClient, message.Chat.Id, message.MessageId, response, cancellationToken);
-                _logger.LogInformation("Видео обработано в чате {ChatId}: {Response}", message.Chat.Id, response.Replace("\n", " "));
+                _logger.LogInformation("Команда {Command} в чате {ChatId}: {Response}", command, message.Id, response.Replace("\n", " "));
+                return;
             }
         }
 
@@ -146,6 +146,7 @@ namespace MeCounter
         private static async Task SendBotReplyAsync(ITelegramBotClient botClient, long chatId, int replyToMessageId,
             string message, CancellationToken cancellationToken, bool reply = true)
         {
+            if (string.IsNullOrEmpty(message)) return;
             await botClient.SendMessage(
                 chatId,
                 message,

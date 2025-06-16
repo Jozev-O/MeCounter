@@ -2,12 +2,8 @@
 using MeCounter.DataAccess.Postgres.Repositories;
 using MeCounter.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -16,7 +12,7 @@ namespace MeCounter.Services
 {
     public class TextProcessor(UsersRepository usersRepository, PornRepository pornRepository, AppDbContext appDbContext) : ITextProcessor
     {
-        private static readonly Regex KeyWordsRegex = new(@"([mмMΜ][еeёэèéêēěėęĕεєЭEЕЁÈÉÊĒĚĖĘĔΕЄæä])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex KeyWordsRegex = new(@"(?i)[мmᴍℳΜḿṃɱᵯᶆ]\p{M}*[еeэёєɛæäëȩèéêēěėę℮ε]\p{M}*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly UsersRepository _usersRepository = usersRepository;
         private readonly PornRepository _pornRepository = pornRepository;
         private readonly AppDbContext _appDbContext = appDbContext;
@@ -26,6 +22,8 @@ namespace MeCounter.Services
             var text = message.Text?.Trim().ToLower();
             if (string.IsNullOrEmpty(text))
                 return null;
+
+            text = RemoveInvisibleChars(text);
 
             // Реакция на "ахтяд бля"
             if (text == "ахмад бля")
@@ -91,6 +89,31 @@ namespace MeCounter.Services
             }
 
             return null;
+        }
+        public static string RemoveInvisibleChars(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            string result = new(input.Where(c =>
+            {
+                var category = char.GetUnicodeCategory(c);
+
+                // Исключаем:
+                // - Format (невидимые форматирующие символы)
+                // - Control (управляющие символы)
+                // - Punctuation (вся пунктуация)
+                // - Symbol (математические, валютные и прочие символы)
+                // - OtherSymbol (эмодзи и прочие специальные символы)
+                return category != UnicodeCategory.Format &&
+                       category != UnicodeCategory.Control &&
+                       category != UnicodeCategory.OtherNotAssigned && // Эмодзи обычно здесь
+                       (char.IsLetter(c) || char.IsDigit(c) || char.IsWhiteSpace(c));
+            }).ToArray());
+
+            return result;
         }
     }
 }
