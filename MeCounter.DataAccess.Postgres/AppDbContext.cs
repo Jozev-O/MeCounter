@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Chat> Chats => Set<Chat>();
     public DbSet<Porn> Porns => Set<Porn>();
+    public DbSet<DiceState> DiceStates => Set<DiceState>();
     public DbSet<VideoMetadata> VideoMetadatas => Set<VideoMetadata>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

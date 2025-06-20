@@ -13,6 +13,7 @@ namespace MeCounter.Commands
         private readonly VideoMetadataRepository _videoRepository;
         private readonly ITelegramBotClient _botClient;
         private readonly string _videoStoragePath = "/app/videos"; // Путь внутри контейнера
+        public string CommandName => "/savevideo";
 
         public SaveVideoCommandHandler(
             ILogger<SaveVideoCommandHandler> logger,
@@ -24,6 +25,7 @@ namespace MeCounter.Commands
             _botClient = botClient;
             Directory.CreateDirectory(_videoStoragePath); // Создаем директорию, если ее нет
         }
+
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {

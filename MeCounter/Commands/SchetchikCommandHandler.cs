@@ -1,6 +1,5 @@
 ﻿using MeCounter.DataAccess.Postgres.Repositories;
 using MeCounter.Interfaces;
-using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +11,8 @@ namespace MeCounter.Commands
     {
         private readonly ChatsRepository _chatsRepository = chatsRepository;
         private readonly UsersRepository _usersRepository = usersRepository;
+
+        public string CommandName => "/schetchik";
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {

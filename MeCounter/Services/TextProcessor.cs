@@ -60,7 +60,7 @@ namespace MeCounter.Services
                         cancellationToken: cancellationToken);
                     }
                 }
-                return porn == null ? "не нашлось, попробуй еще" : porn.Url.OriginalString;
+                return porn?.Url?.OriginalString ?? "не нашлось, попробуй еще";
             }
 
 

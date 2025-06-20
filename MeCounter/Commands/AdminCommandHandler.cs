@@ -36,6 +36,7 @@ namespace MeCounter.Commands
         };
         }
 
+        public string CommandName => "/admin";
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {

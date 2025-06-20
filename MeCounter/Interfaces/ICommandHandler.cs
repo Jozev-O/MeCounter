@@ -1,10 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using Telegram.Bot.Types;
 
 namespace MeCounter.Interfaces
 {
     public interface ICommandHandler
     {
-        Task<string> HandleAsync(Telegram.Bot.Types.Message message, CancellationToken cancellationToken);
+        string CommandName { get; }
+        Task<string> HandleAsync(Message message, CancellationToken cancellationToken);
     }
 }

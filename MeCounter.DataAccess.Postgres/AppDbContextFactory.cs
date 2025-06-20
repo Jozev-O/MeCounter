@@ -1,17 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
-namespace MeCounter.DataAccess.Postgres;
-
-public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+namespace MeCounter.DataAccess.Postgres
 {
-    public AppDbContext CreateDbContext(string[] args)
+    public interface IAppDbContextFactory
     {
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        AppDbContext Create();
+    }
 
-         //👉 ЗАМЕНИ СТРОКУ ПОДКЛЮЧЕНИЯ НА СВОЮ
-        //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=passw0rd;Database=telegrambot_db");
+    public class AppDbContextFactory : IAppDbContextFactory, IDesignTimeDbContextFactory<AppDbContext>
+    {
+        
+        public AppDbContextFactory()
+        {
+        }
 
-        return new AppDbContext(optionsBuilder.Options);
+        public AppDbContext Create()
+        {
+            return CreateDbContext(null);
+        }
+
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=passw0rd;Database=telegrambot_db");
+
+            return new AppDbContext(optionsBuilder.Options);
+        }
     }
 }

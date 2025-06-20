@@ -22,6 +22,12 @@ namespace MeCounter.DataAccess.Postgres.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.UserId == id);
         }
+        public async Task<List<User>> GetUsersByChatId(long chatId) =>
+            await _appDbContext.Users
+                .AsNoTracking()
+                .Where(u => u.Chats.Any(c => c.ChatId == chatId))
+                .ToListAsync();
+
         public async Task<int> GetUserWordCountAsync(long userId) =>
             (await _appDbContext.Users
             .FirstOrDefaultAsync(u => u.UserId == userId))?.WordCount ?? 0;

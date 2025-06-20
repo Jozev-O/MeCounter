@@ -14,6 +14,7 @@ namespace MeCounter.Commands
         private readonly ILogger<SendVideoCommandHandler> _logger = logger;
         private readonly VideoMetadataRepository _videoRepository = videoRepository;
         private readonly ITelegramBotClient _botClient = botClient;
+        public string CommandName => "/sendvideo";
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {

@@ -6,6 +6,7 @@ namespace MeCounter.Commands
 {
     public class VersionCommandHandler : ICommandHandler
     {
+        public string CommandName => "/version";
         public Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {
             if (message == null)

@@ -17,6 +17,7 @@ namespace MeCounter.Commands
         private readonly ILogger<PornCommandHandler> _logger = logger;
         private readonly PornRepository _pornRepository = pornRepository;
         private readonly UsersRepository _userRepository = userRepository;
+        public string CommandName => "/яйца";
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {

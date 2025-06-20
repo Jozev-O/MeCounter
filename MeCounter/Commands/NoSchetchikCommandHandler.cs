@@ -7,6 +7,7 @@ namespace MeCounter.Commands
     public class NoSchetchikCommandHandler(UsersRepository usersRepository) : ICommandHandler
     {
         private readonly UsersRepository _usersRepository = usersRepository;
+        public string CommandName => "/no_schetchik";
 
         public async Task<string> HandleAsync(Message message, CancellationToken cancellationToken)
         {
